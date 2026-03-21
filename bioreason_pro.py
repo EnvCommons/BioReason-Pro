@@ -3,7 +3,7 @@ from typing import List
 
 from pydantic import BaseModel
 
-from openreward.environments import Environment, JSONObject, ToolOutput, tool, TextBlock
+from openreward.environments import Environment, JSONObject, Split, ToolOutput, tool, TextBlock
 from utils import load_data
 
 
@@ -19,7 +19,6 @@ class AnswerInput(BaseModel, extra="forbid"):
 
 
 TASKS_BY_SPLIT, ANSWERS = load_data()
-AVAILABLE_SPLITS = sorted(TASKS_BY_SPLIT.keys())
 
 
 def compute_f1(predicted: set[str], truth: set[str]) -> dict:
@@ -70,9 +69,14 @@ class BioReasonPro(Environment):
     @classmethod
     def list_tasks(cls, split: str) -> list[JSONObject]:
         if split not in TASKS_BY_SPLIT:
-            raise ValueError(f"Unknown split: {split}. Available: {AVAILABLE_SPLITS}")
+            raise ValueError(f"Unknown split: {split}. Available: {list(TASKS_BY_SPLIT.keys())}")
         return TASKS_BY_SPLIT[split]  # type: ignore
 
     @classmethod
-    def list_splits(cls) -> list[str]:
-        return AVAILABLE_SPLITS.copy()
+    def list_splits(cls) -> list[Split]:
+        return [
+            Split(name="train", type="train"),
+            Split(name="mf", type="train"),
+            Split(name="bp", type="train"),
+            Split(name="cc", type="train"),
+        ]
