@@ -4,7 +4,7 @@
 
 ## Description
 
-bioreason-pro-rl-reasoning-data is an environment for evaluating protein function prediction using Gene Ontology (GO) term annotation, based on the [BioReason-Pro]([https://github.com/bowang-lab/BioReason-Pro](https://huggingface.co/datasets/wanglab/bioreason-pro-rl-reasoning-data)) dataset. Agents receive protein metadata including amino acid sequence, organism, InterPro domain annotations, protein-protein interaction partners, and initial GO term speculations from [GO-GPT](https://huggingface.co/wanglab/gogpt). Following the original BioReason-Pro reasoning pipeline, agents must reason about the protein's function and predict the correct set of GO terms. Scoring uses deterministic set-based F1, comparing predicted GO term IDs against ground truth annotations curated from UniProt with experimental evidence.
+bioreason-pro-rl-reasoning-data is an environment for evaluating protein function prediction using Gene Ontology (GO) term annotation, based on the [BioReason-Pro](https://github.com/bowang-lab/BioReason-Pro](https://huggingface.co/datasets/wanglab/bioreason-pro-rl-reasoning-data) dataset. Agents receive protein metadata including amino acid sequence, organism, InterPro domain annotations, protein-protein interaction partners, and initial GO term speculations from [GO-GPT](https://huggingface.co/wanglab/gogpt). Following the original BioReason-Pro reasoning pipeline, agents must reason about the protein's function and predict the correct set of GO terms. Scoring uses deterministic set-based F1, comparing predicted GO term IDs against ground truth annotations curated from UniProt with experimental evidence.
 
 ## Capabilities
 
