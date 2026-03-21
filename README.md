@@ -1,6 +1,6 @@
 # BioReason-Pro
 
-[![OpenReward Environment](https://img.shields.io/badge/%E2%AD%90%20OpenReward-Environment-f7e6cc)](https://openreward.ai/GeneralReasoning/BioReason-Pro)
+[![OpenReward Environment](https://img.shields.io/badge/%E2%AD%90%20OpenReward-Environment-f7e6cc)](https://openreward.ai/OpenAI/BioReason-Pro)
 [![Hugging Face Dataset](https://img.shields.io/badge/Hugging%20Face-Dataset-orange)](https://huggingface.co/datasets/wanglab/bioreason-pro-rl-reasoning-data)
 
 ## Description
@@ -77,7 +77,9 @@ There are no further environment requirements. BioReason-Pro uses deterministic 
 
 ## Safety
 
-Agents in BioReason-Pro answer protein function prediction questions in a standard environment. The environment does not present direct safety risks.
+Agents in BioReason-Pro answer protein function prediction questions in a standard environment. The environment does not provide tools for code execution, web access, or file system modification.
+
+Protein function prediction is a dual-use capability. Accurate functional annotation of proteins could in principle be applied to characterize proteins involved in pathogenicity, toxin production, or antimicrobial resistance. However, the tasks in this environment operate on publicly available UniProt annotations and GO terms, and the predictions are limited to categorical ontology labels rather than actionable design instructions. The risk profile is comparable to querying existing protein databases.
 
 ## Citation
 
