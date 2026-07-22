@@ -3,7 +3,7 @@ import pytest
 from bioreason_pro import BioReasonPro, AnswerInput
 
 
-split = BioReasonPro.list_splits()[0]
+split = BioReasonPro.list_splits()[0].name
 tasks = BioReasonPro.list_tasks(split=split)
 N_CHECK = 10
 tasks = tasks[:N_CHECK]

@@ -38,8 +38,8 @@ Each task provides the agent with protein ID, name, organism, sequence, subcellu
 This is a sparse, verifiable reward environment with deterministic scoring:
 
 1. Agent receives protein information and the GO aspect(s) to predict
-2. Agent submits predicted GO terms via the `answer` tool
-3. GO term IDs (pattern `GO:XXXXXXX`) are extracted from the response
+2. Agent replies with its predicted GO terms as an ordinary message
+3. GO term IDs (pattern `GO:XXXXXXX`) are extracted from the whole reply
 4. Set-based F1 is computed against ground truth:
    - Precision = |predicted ∩ truth| / |predicted|
    - Recall = |predicted ∩ truth| / |truth|
@@ -54,13 +54,11 @@ Data is sourced from the [wanglab/bioreason-pro-rl-reasoning-data](https://huggi
 
 ## Tools
 
-| Tool | Description |
-|------|-------------|
-| `answer` | Submit predicted GO terms for F1-based scoring |
+Agents are given no visible tools. The environment uses a hidden `@terminal` tool: the agent's final plain-text message is the answer; GO term IDs are regex-extracted from the whole reply and set-F1-scored against the reference.
 
 ## Time Horizon
 
-Single-turn. Each task is evaluated in a single interaction.
+Single-turn. The agent replies with one plain-text message listing its GO term predictions.
 
 ## Environment Difficulty
 

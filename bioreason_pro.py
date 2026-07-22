@@ -3,7 +3,7 @@ from typing import List
 
 from pydantic import BaseModel
 
-from openreward.environments import Environment, JSONObject, Split, ToolOutput, tool, TextBlock
+from openreward.environments import Environment, JSONObject, Split, ToolOutput, terminal, tool, TextBlock
 from utils import load_data
 
 
@@ -40,8 +40,10 @@ class BioReasonPro(Environment):
         self.validated = TaskSpec.model_validate(task_spec)
         self.ground_truth = ANSWERS[self.validated.id]["go_terms"]
 
+    @terminal
     @tool
     async def answer(self, params: AnswerInput) -> ToolOutput:
+        """Grade the assistant's final message by extracting GO term IDs and computing set F1."""
         predicted = set(re.findall(r"GO:\d{7}", params.answer))
         metrics = compute_f1(predicted, self.ground_truth)
         reward = metrics["f1"]
