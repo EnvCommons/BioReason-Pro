@@ -4,7 +4,7 @@
 
 ## Description
 
-bioreason-pro-rl-reasoning-data is an environment for evaluating protein function prediction using Gene Ontology (GO) term annotation, based on the [BioReason-Pro](https://github.com/bowang-lab/BioReason-Pro](https://huggingface.co/datasets/wanglab/bioreason-pro-rl-reasoning-data) dataset. Agents receive protein metadata including amino acid sequence, organism, InterPro domain annotations, protein-protein interaction partners, and initial GO term speculations from [GO-GPT](https://huggingface.co/wanglab/gogpt). Following the original BioReason-Pro reasoning pipeline, agents must reason about the protein's function and predict the correct set of GO terms. Scoring uses deterministic set-based F1, comparing predicted GO term IDs against ground truth annotations curated from UniProt with experimental evidence.
+bioreason-pro-rl-reasoning-data is an environment for evaluating protein function prediction using Gene Ontology (GO) term annotation, based on the [BioReason-Pro](https://github.com/bowang-lab/BioReason-Pro) dataset. Agents receive protein metadata including amino acid sequence, organism, InterPro domain annotations, protein-protein interaction partners, and initial GO term speculations from [GO-GPT](https://huggingface.co/wanglab/gogpt). Following the original BioReason-Pro reasoning pipeline, agents must reason about the protein's function and predict the correct set of GO terms. Scoring uses deterministic set-based F1, comparing predicted GO term IDs against ground truth annotations curated from UniProt with experimental evidence.
 
 ## Capabilities
 
@@ -48,6 +48,12 @@ This is a sparse, verifiable reward environment with deterministic scoring:
 
 No LLM grader is used.
 
+### Decoding strategy and choice of metric
+
+This environment adopts **greedy decoding**, one of the decoding strategies outlined in the [BioReason-Pro paper](https://www.biorxiv.org/content/10.64898/2026.03.19.712954v1.full.pdf). Greedy decoding produces a single unranked set of GO terms per protein rather than a confidence-ranked list, so there is no per-term score to sweep a decision threshold over.
+
+The reward metric is therefore the **F1 score without thresholding**: set-based F1 over exactly the terms the agent emitted, computed once. This is the operating point greedy decoding actually gives you, and it is what the numbers in this environment mean.
+
 ## Data
 
 Data is sourced from the [wanglab/bioreason-pro-rl-reasoning-data](https://huggingface.co/datasets/wanglab/bioreason-pro-rl-reasoning-data) dataset containing 9,197 proteins with experimental GO annotations curated from UniProt. Each protein includes amino acid sequence, InterPro domain annotations, protein-protein interaction partners, and pre-computed GO-GPT predictions. Task data is stored on the OpenReward platform.
@@ -62,11 +68,13 @@ Single-turn. The agent replies with one plain-text message listing its GO term p
 
 ## Environment Difficulty
 
-BioReason-Pro model performance on GO term prediction (F_max):
+BioReason-Pro model performance on GO term prediction, as reported in the paper (F_max):
 
 | Model | F_max |
 |-------|-------|
 | BioReason-Pro RL (Qwen3-4B + ESM3 + GRPO) | 73.6% |
+
+**Read the Qwen3-4B figure as an upper bound on what that model would score in this environment, not as a comparable baseline.** F_max is the best F1 attainable across a sweep of confidence thresholds — an operating point selected with hindsight over the whole evaluation set. Under the greedy decoding this environment adopts there is no threshold to tune, and the reward is the un-thresholded F1 of the single set the agent emits, which sits at or below F_max by construction. Expect a Qwen3-4B-class model to score somewhat under 73.6% here.
 
 ## Other Environment Requirements
 
