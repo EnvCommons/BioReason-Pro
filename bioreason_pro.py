@@ -7,6 +7,11 @@ from openreward.environments import Environment, JSONObject, Split, ToolOutput, 
 from utils import load_data
 
 
+# Reward for a submission made after the task has already been graded. Negative
+# so repeat submissions are actively discouraged, not merely left unscored.
+REPEAT_SUBMISSION_PENALTY = -0.1
+
+
 class TaskSpec(BaseModel):
     id: str
     protein_id: str
@@ -40,13 +45,32 @@ class BioReasonPro(Environment):
         self.validated = TaskSpec.model_validate(task_spec)
         self.ground_truth = ANSWERS[self.validated.id]["go_terms"]
 
+        # Graded submissions this session. @terminal already hides this tool from
+        # the model, so the harness normally invokes it once at the end of the
+        # rollout -- but Environment._call_tool dispatches by name and does not
+        # exclude terminal tools, so a direct second call would re-grade and pay
+        # out again. Defence in depth.
+        self.submitted = 0
+
     @terminal
     @tool
     async def answer(self, params: AnswerInput) -> ToolOutput:
         """Grade the assistant's final message by extracting GO term IDs and computing set F1."""
+        if self.submitted > 0:
+            return ToolOutput(
+                blocks=[TextBlock(text="An answer has already been submitted for this task. "
+                                       "This episode is over: it is not re-graded, and repeat "
+                                       "submissions are penalised (reward -0.1).")],
+                metadata={"already_submitted": True, "submission_count": self.submitted},
+                reward=REPEAT_SUBMISSION_PENALTY,
+                finished=True,
+            )
+
         predicted = set(re.findall(r"GO:\d{7}", params.answer))
         metrics = compute_f1(predicted, self.ground_truth)
         reward = metrics["f1"]
+
+        self.submitted += 1
 
         return ToolOutput(
             metadata={
