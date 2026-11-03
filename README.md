@@ -18,11 +18,11 @@ Agents are given a standard environment with no sandbox or file system access.
 
 ## License
 
-[Apache 2.0](https://opensource.org/licenses/Apache-2.0)
+[MIT](https://opensource.org/licenses/MIT).
 
 ## Tasks
 
-Tasks are organized into four splits:
+There are 9,197 tasks in the `train` split, 4,914 in `mf`, 5,881 in `bp` and 5,610 in `cc`:
 
 | Split | Description | Tasks |
 |-------|-------------|-------|
@@ -46,7 +46,7 @@ This is a sparse, verifiable reward environment with deterministic scoring:
    - F1 = 2 * precision * recall / (precision + recall)
 5. Continuous reward in [0, 1]
 
-No LLM grader is used.
+A repeated submission is not re-graded and gets -0.1. No LLM grader is used.
 
 ### Decoding strategy and choice of metric
 
@@ -72,13 +72,13 @@ BioReason-Pro model performance on GO term prediction, as reported in the paper 
 
 | Model | F_max |
 |-------|-------|
-| BioReason-Pro RL (Qwen3-4B + ESM3 + GRPO) | 73.6% |
+| BioReason-Pro | 73.6% |
 
-**Read the Qwen3-4B figure as an upper bound on what that model would score in this environment, not as a comparable baseline.** F_max is the best F1 attainable across a sweep of confidence thresholds — an operating point selected with hindsight over the whole evaluation set. Under the greedy decoding this environment adopts there is no threshold to tune, and the reward is the un-thresholded F1 of the single set the agent emits, which sits at or below F_max by construction. Expect a Qwen3-4B-class model to score somewhat under 73.6% here.
+**Read this figure as an upper bound on what that model would score in this environment, not as a comparable baseline.** F_max is the best F1 attainable across a sweep of confidence thresholds, an operating point selected with hindsight over the whole evaluation set. Under the greedy decoding this environment adopts there is no threshold to tune, and the reward is the un-thresholded F1 of the single set the agent emits, which sits at or below F_max by construction.
 
 ## Other Environment Requirements
 
-There are no further environment requirements. BioReason-Pro uses deterministic F1 scoring and does not require any external API keys.
+bioreason-pro-rl-reasoning-data needs no secrets; scoring is deterministic F1.
 
 ## Safety
 
